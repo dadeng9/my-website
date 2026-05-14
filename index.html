@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Name | Portfolio</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #04050b;
+        --bg-2: #0a1020;
+        --text: #e8ebff;
+        --muted: #aeb8d8;
+        --cyan: #5de6ff;
+        --magenta: #ff48d5;
+        --purple: #8f72ff;
+        --glass: rgba(17, 22, 38, 0.55);
+        --glass-border: rgba(141, 172, 255, 0.25);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Inter", "SF Pro Display", "Segoe UI", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(70vw 70vw at 15% 10%, rgba(143, 114, 255, 0.14), transparent 55%),
+          radial-gradient(70vw 70vw at 85% 90%, rgba(93, 230, 255, 0.12), transparent 55%),
+          linear-gradient(160deg, var(--bg), var(--bg-2));
+        overflow-x: hidden;
+      }
+
+      .scanlines {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 40;
+        opacity: 0.12;
+        background: repeating-linear-gradient(
+          to bottom,
+          rgba(255, 255, 255, 0.09) 0px,
+          rgba(255, 255, 255, 0.09) 1px,
+          transparent 2px,
+          transparent 4px
+        );
+      }
+
+      .noise {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 39;
+        opacity: 0.07;
+        background-image:
+          radial-gradient(rgba(255, 255, 255, 0.2) 0.5px, transparent 0.5px),
+          radial-gradient(rgba(255, 255, 255, 0.12) 0.5px, transparent 0.5px);
+        background-position: 0 0, 10px 10px;
+        background-size: 18px 18px;
+      }
+
+      .sections {
+        scroll-snap-type: y mandatory;
+      }
+
+      .section {
+        min-height: 100svh;
+        scroll-snap-align: start;
+        padding: clamp(1.2rem, 3.5vw, 3rem);
+        display: grid;
+        place-items: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .section::before {
+        content: "";
+        position: absolute;
+        width: 56vmax;
+        height: 56vmax;
+        border-radius: 50%;
+        filter: blur(42px);
+        opacity: 0.24;
+        background: radial-gradient(circle, rgba(93, 230, 255, 0.35), rgba(255, 72, 213, 0.16), transparent 70%);
+        transform: translate3d(0, calc(var(--parallax, 0px) * -1), 0);
+      }
+
+      .content {
+        width: min(1120px, 100%);
+        z-index: 2;
+      }
+
+      .landing-name {
+        margin: 0;
+        text-align: center;
+        text-transform: uppercase;
+        font-size: clamp(3.2rem, 14vw, 10.4rem);
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        color: #ffd4f3;
+        text-shadow:
+          0 0 8px rgba(255, 72, 213, 0.85),
+          0 0 22px rgba(255, 72, 213, 0.68),
+          0 0 44px rgba(93, 230, 255, 0.68),
+          2px 0 0 rgba(255, 72, 213, 0.7),
+          -2px 0 0 rgba(93, 230, 255, 0.85);
+        position: relative;
+        animation: name-glow 2.8s ease-in-out infinite;
+      }
+
+      .landing-name::before,
+      .landing-name::after {
+        content: attr(data-text);
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        mix-blend-mode: screen;
+      }
+
+      .landing-name::before {
+        color: rgba(93, 230, 255, 0.85);
+        transform: translateX(-1px);
+        animation: glitch-x 2.2s steps(2, end) infinite;
+      }
+
+      .landing-name::after {
+        color: rgba(255, 72, 213, 0.85);
+        transform: translateX(1px);
+        animation: glitch-x 1.7s steps(2, end) infinite reverse;
+      }
+
+      .section-title {
+        margin: 0 0 1rem;
+        font-size: clamp(1.3rem, 3.1vw, 2.2rem);
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        color: var(--cyan);
+      }
+
+      .cards {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(12, 1fr);
+      }
+
+      .card {
+        grid-column: span 12;
+        background: linear-gradient(160deg, rgba(23, 30, 52, 0.56), var(--glass));
+        border: 1px solid var(--glass-border);
+        border-radius: 18px;
+        padding: 1rem 1.1rem;
+        backdrop-filter: blur(14px);
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+          0 18px 40px rgba(0, 0, 0, 0.35),
+          0 0 28px rgba(93, 230, 255, 0.08);
+        transition: transform 0.38s ease, border-color 0.38s ease, box-shadow 0.38s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-6px) scale(1.01);
+        border-color: rgba(255, 72, 213, 0.45);
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+          0 24px 52px rgba(0, 0, 0, 0.4),
+          0 0 34px rgba(255, 72, 213, 0.2);
+      }
+
+      .label {
+        margin: 0;
+        font-size: 0.76rem;
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+        color: #99a7d9;
+      }
+
+      .value {
+        margin: 0.2rem 0 0;
+        font-size: 1rem;
+      }
+
+      .project-grid {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(12, 1fr);
+      }
+
+      .project-card {
+        grid-column: span 12;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .project-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: linear-gradient(
+          to right,
+          transparent,
+          rgba(93, 230, 255, 0.18),
+          transparent
+        );
+        transform: translateX(-100%);
+        animation: glitch-line 6s linear infinite;
+      }
+
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.45rem;
+        margin-top: 0.6rem;
+      }
+
+      .tag {
+        border: 1px solid rgba(114, 149, 255, 0.38);
+        border-radius: 999px;
+        padding: 0.16rem 0.52rem;
+        font-size: 0.78rem;
+        color: #cdd5ff;
+        background: rgba(143, 114, 255, 0.14);
+      }
+
+      .timeline {
+        position: relative;
+        display: grid;
+        gap: 1rem;
+      }
+
+      .timeline::before {
+        content: "";
+        position: absolute;
+        left: 13px;
+        top: 8px;
+        bottom: 8px;
+        width: 2px;
+        background: linear-gradient(to bottom, rgba(93, 230, 255, 0.7), rgba(255, 72, 213, 0.55));
+      }
+
+      .timeline-item {
+        position: relative;
+        padding-left: 2.1rem;
+      }
+
+      .timeline-item::before {
+        content: "";
+        position: absolute;
+        left: 8px;
+        top: 0.9rem;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: linear-gradient(140deg, var(--cyan), var(--magenta));
+        box-shadow: 0 0 14px rgba(93, 230, 255, 0.7);
+      }
+
+      .muted {
+        color: var(--muted);
+      }
+
+      .list {
+        margin: 0.6rem 0 0;
+        padding-left: 1.1rem;
+      }
+
+      .list li {
+        margin: 0.3rem 0;
+        color: var(--muted);
+      }
+
+      .reveal {
+        opacity: 0;
+        transform: translateY(30px) scale(0.98);
+        transition: opacity 0.8s ease, transform 0.8s ease;
+      }
+
+      .reveal.is-visible {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+
+      @media (min-width: 860px) {
+        .edu-half {
+          grid-column: span 6;
+        }
+
+        .project-card {
+          grid-column: span 4;
+        }
+      }
+
+      @keyframes name-glow {
+        0%,
+        100% {
+          filter: brightness(1);
+        }
+        50% {
+          filter: brightness(1.12);
+        }
+      }
+
+      @keyframes glitch-x {
+        0%,
+        95%,
+        100% {
+          transform: translateX(0);
+          opacity: 0.92;
+        }
+        96% {
+          transform: translateX(-3px);
+          opacity: 0.78;
+        }
+        97% {
+          transform: translateX(3px);
+          opacity: 0.8;
+        }
+        98% {
+          transform: translateX(-1px);
+          opacity: 0.88;
+        }
+      }
+
+      @keyframes glitch-line {
+        0% {
+          transform: translateX(-110%);
+        }
+        25%,
+        100% {
+          transform: translateX(120%);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="scanlines" aria-hidden="true"></div>
+    <div class="noise" aria-hidden="true"></div>
+
+    <main class="sections">
+      <section class="section" data-speed="0.25">
+        <div class="content">
+          <h1 class="landing-name" data-text="YOUR NAME">YOUR NAME</h1>
+        </div>
+      </section>
+
+      <section class="section" data-speed="0.18">
+        <div class="content reveal">
+          <h2 class="section-title">Education</h2>
+          <div class="cards">
+            <article class="card edu-half">
+              <p class="label">School Name</p>
+              <p class="value">[Your University Name]</p>
+            </article>
+            <article class="card edu-half">
+              <p class="label">Major</p>
+              <p class="value">[Your Major]</p>
+            </article>
+            <article class="card edu-half">
+              <p class="label">Degree</p>
+              <p class="value">[Bachelor / Master / Other]</p>
+            </article>
+            <article class="card edu-half">
+              <p class="label">GPA</p>
+              <p class="value">[Your GPA]</p>
+            </article>
+            <article class="card edu-half">
+              <p class="label">Relevant Coursework</p>
+              <p class="value">[Course 1], [Course 2], [Course 3]</p>
+            </article>
+            <article class="card edu-half">
+              <p class="label">Expected Graduation</p>
+              <p class="value">[Month, Year]</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" data-speed="0.14">
+        <div class="content reveal">
+          <h2 class="section-title">Projects</h2>
+          <div class="project-grid">
+            <article class="card project-card">
+              <p class="label">Project Title</p>
+              <p class="value">[Project Name]</p>
+              <p class="muted">[One-sentence project summary and value delivered.]</p>
+              <div class="tags">
+                <span class="tag">[Tech 1]</span>
+                <span class="tag">[Tech 2]</span>
+                <span class="tag">[Tech 3]</span>
+              </div>
+              <ul class="list">
+                <li>[Achievement or measurable result]</li>
+                <li>[Core contribution]</li>
+              </ul>
+            </article>
+
+            <article class="card project-card">
+              <p class="label">Project Title</p>
+              <p class="value">[Project Name]</p>
+              <p class="muted">[One-sentence project summary and value delivered.]</p>
+              <div class="tags">
+                <span class="tag">[Tech 1]</span>
+                <span class="tag">[Tech 2]</span>
+                <span class="tag">[Tech 3]</span>
+              </div>
+              <ul class="list">
+                <li>[Achievement or measurable result]</li>
+                <li>[Core contribution]</li>
+              </ul>
+            </article>
+
+            <article class="card project-card">
+              <p class="label">Project Title</p>
+              <p class="value">[Project Name]</p>
+              <p class="muted">[One-sentence project summary and value delivered.]</p>
+              <div class="tags">
+                <span class="tag">[Tech 1]</span>
+                <span class="tag">[Tech 2]</span>
+                <span class="tag">[Tech 3]</span>
+              </div>
+              <ul class="list">
+                <li>[Achievement or measurable result]</li>
+                <li>[Core contribution]</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" data-speed="0.1">
+        <div class="content reveal">
+          <h2 class="section-title">Internship Experience</h2>
+          <div class="timeline">
+            <article class="card timeline-item">
+              <p class="label">Company / Position / Time</p>
+              <p class="value">[Company Name] - [Role Title] - [Start - End]</p>
+              <p class="muted">Tools: [Tool 1], [Tool 2], [Tool 3]</p>
+              <ul class="list">
+                <li>[Responsibility 1]</li>
+                <li>[Responsibility 2]</li>
+                <li>[Achievement or impact]</li>
+              </ul>
+            </article>
+
+            <article class="card timeline-item">
+              <p class="label">Company / Position / Time</p>
+              <p class="value">[Company Name] - [Role Title] - [Start - End]</p>
+              <p class="muted">Tools: [Tool 1], [Tool 2], [Tool 3]</p>
+              <ul class="list">
+                <li>[Responsibility 1]</li>
+                <li>[Responsibility 2]</li>
+                <li>[Achievement or impact]</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const reveals = document.querySelectorAll(".reveal");
+      const sections = document.querySelectorAll(".section");
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+            }
+          });
+        },
+        { threshold: 0.2 }
+      );
+
+      reveals.forEach((el) => observer.observe(el));
+
+      function updateParallax() {
+        sections.forEach((section) => {
+          const rect = section.getBoundingClientRect();
+          const speed = Number(section.dataset.speed || 0.1);
+          const progress = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
+          section.style.setProperty("--parallax", `${(progress - 0.5) * 120 * speed}px`);
+        });
+      }
+
+      updateParallax();
+      window.addEventListener("scroll", updateParallax, { passive: true });
+      window.addEventListener("resize", updateParallax);
+    </script>
+  </body>
+</html>
