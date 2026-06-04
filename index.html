@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DENG | Portfolio</title>
     <style>
+      @font-face {
+        font-family: "Metal Lord";
+        src: url("fonts/Metal Lord.otf") format("opentype");
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+
       :root {
         color-scheme: dark;
         --bg: #04050b;
@@ -100,9 +108,13 @@
         margin: 0;
         text-align: center;
         text-transform: uppercase;
-        font-size: clamp(3.2rem, 14vw, 10.4rem);
-        font-weight: 800;
-        letter-spacing: 0.08em;
+        font-family: "Metal Lord", cursive;
+        font-size: clamp(3.6rem, 15vw, 11rem);
+        font-weight: normal;
+        letter-spacing: 0.02em;
+        line-height: 1;
+        font-variant-ligatures: common-ligatures;
+        font-feature-settings: "liga" 1;
         color: #ffd4f3;
         text-shadow:
           0 0 8px rgba(255, 72, 213, 0.85),
